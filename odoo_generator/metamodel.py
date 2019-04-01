@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 class Module:
     def __init__(self):
@@ -53,6 +53,8 @@ class Field:
         self.groups = None
         self.copy = None
         self.oldname = None
+        self.track_visibility = None
+        self.related = None
         # Computed fields
         self.compute = None
         self.inverse = None
@@ -82,24 +84,26 @@ class Field:
         self.relation = None
         self.column1 = None
         self.column2 = None
-        self.attributes_to_ignore = []
+        self.attributes_to_ignore = ['attributes_to_ignore', 'model']
+
 
     def build_methods(self):
+        Method = namedtuple('Method', ['name'])
         if self.compute:
             value = eval(self.compute)
             if isinstance(value, str):
-                self.model.methods.append({'name': value})
+                self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append({'name': '_compute_{}'.format(self.name)})
+                self.model.methods.append(Method(name='_compute_{}'.format(self.name)))
         if self.inverse:
             value = eval(self.inverse)
             if isinstance(value, str):
-                self.model.methods.append({'name': value})
+                self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append({'name': '_inverse_{}'.format(self.name)})
+                self.model.methods.append(Method(name='_inverse_{}'.format(self.name)))
         if self.search:
             value = eval(self.search)
             if isinstance(value, str):
-                self.model.methods.append({'name': value})
+                self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append({'name': '_search_{}'.format(self.name)})
+                self.model.methods.append(Method(name='_search_{}'.format(self.name)))
