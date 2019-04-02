@@ -162,6 +162,9 @@ class CodeGenerator(ABC):
             self.do_generate(module, templates_dir, output_dir)
         return True
 
+    def get_filename_for_model(self, model):
+        return model._name.lower().replace(".", "_")
+
     @abstractmethod
     def do_generate(module, templates_dir, output_dir):
         pass

@@ -3,9 +3,6 @@ from odoo_generator.odoo_generator import CodeGenerator
 from cookiecutter.main import cookiecutter
 
 class ModelCodeGenerator(CodeGenerator):
-    def get_filename_for_model(self, model):
-        return model._name.lower().replace(".", "_")
-
     def do_generate(self, module, templates_dir, output_dir):
         models = module.models.values()
         filenames = [ self.get_filename_for_model(m) for m in models ]
