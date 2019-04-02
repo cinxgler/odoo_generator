@@ -32,10 +32,12 @@ class Model:
         self._table = None
         self._rec_name = None
         self._inherit = []
-        self.attributes_to_ignore =  ['fields', 'methods', 'namespace']
+        self.attributes_to_ignore =  ['fields', 'methods', 'namespace', 'shortname']
         self.fields = []
         self.methods = []
-        self.namespace = name.split('.')[0]
+        name_parts = name.split('.')
+        self.namespace = name_parts[0]
+        self.shortname = '.'.join(name_parts[1:])
 
 
 class Field:
@@ -55,6 +57,7 @@ class Field:
         self.oldname = None
         self.track_visibility = None
         self.related = None
+        self.invisible = None
         # Computed fields
         self.compute = None
         self.inverse = None

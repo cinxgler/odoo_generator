@@ -1,0 +1,7 @@
+{
+    "name": "Module name",
+    "namespace": "module main namespace",
+    "_module": "metadata.Module object",
+    "_model": "metadata.Model object",
+    "model_filename": "current model to generate"
+}

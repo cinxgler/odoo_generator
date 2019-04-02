@@ -1,0 +1,115 @@
+{% macro search_field(field) -%}
+            <field name="{{ field.name }}" />
+            {#- TODO: Search for selection options -#}
+            {#- TODO: Search for boolean options -#}
+{%- endmacro -%}
+{% macro search_group_by_field(field) -%}
+    <filter string="{{ field.string }}" context="{'group_by':'{{ field.name }}'}" domain="" name="group_by_{{ field.name }}" />
+{%- endmacro -%}
+{% macro form_field(field, widget=False, within_tab=False) -%}
+    {%- set field_invisible = '' -%}
+    {%- if field.invisible -%}
+        {%- set field_invisible = ' invisible="1"' -%}
+    {%- endif -%}
+
+    {%- set field_binary = '' -%}
+    {%- if field.type == 'Binary' -%}
+        {%- set field_binary = ' filename="' + field.name + '_filename"' -%}
+    {%- endif -%}
+
+    {%- set field_context = '' -%}
+    {%- if field.inverse_name -%}
+        {%- set field_context = ' context="{\'' + field.inverse_name + '\': active_id}"' -%}
+    {%- endif -%}
+
+    {%- set field_widget = '' -%}
+    {%- if widget -%}
+        {%- set field_widget = ' widget="' + widget + '"' -%}
+    {%- endif -%}
+
+    {%- set field_nolabel = '' -%}
+    {%- if within_tab and field.type in ['one2many', 'many2many'] -%}
+        {%- set field_nolabel = ' nolabel="1" colspan="4"' -%}
+        <separator colspan="4"{{ field_invisible }} string="{{ field.string }}" />
+    {%- endif -%}
+        <field name="{{field.name}}"{{ field_widget }}{{ field_invisible }}{{ field_binary }}{{ field_nolabel }}{{ field_context }} />
+{%- endmacro -%}
+{% macro tree_field(field) -%}
+    {%- set field_invisible = '' -%}
+    {%- if field.invisible -%}
+        {%- set field_invisible = ' invisible="1"' -%}
+    {%- endif -%}
+
+    <field name="{{field.name}}"{{field_invisible}} />
+{%- endmacro -%}
+{%- set model = cookiecutter._model -%}
+{%- set module = cookiecutter._module -%}
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    =================================================================
+    {{model._name}}{% if model._description %}
+    {{model._description}}{% endif %}
+    =================================================================
+    -->
+    <record id="{{ model.shortname | replace('.','_') }}_search" model="ir.ui.view">
+        <field name="name">{{ model._name }}.search{% if model.namespace != module.namespace %}.{{ module.name }}{% endif %}</field>
+        <field name="model">{{ model._name }}</field>
+        <field name="arch" type="xml">
+            <search>
+            {%- for field in model.fields %}
+                {{ search_field(field) }}
+            {%- endfor %}
+                <group expand="0" string="Group By">
+                {%- for field in model.fields if field.type in ['Many2one', 'Boolean', 'Date', 'Datetime'] %}
+                    {{ search_group_by_field(field) }}
+                {%- endfor %}
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="{{ model.shortname | replace('.','_') }}_form" model="ir.ui.view">
+        <field name="name">{{ model._name }}.form{% if model.namespace != module.namespace %}.{{ module.name }}{% endif %}</field>
+        <field name="model">{{ model._name }}</field>{%- if model.namespace != module.namespace %}
+        <!-- <field name="inherit_id" ref="" /> -->
+        {%- endif %}
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                {#- TODO: add workflow buttons -#}
+                {%- for field in model.fields if field.name in ['state', 'stage_id'] %}
+                    {{  form_field(field, 'statusbar') }}
+                {%- endfor %}
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                    </div>
+                    <group>
+                    {%- for field in model.fields if field.name not in ['state', 'stage_id'] %}
+                        {{  form_field(field) }}
+                    {%- endfor %}
+                    </group>
+                    <notebook>
+                        {# TODO: Handle Notebook #}
+                    </notebook>
+                </sheet>
+                {%- if model._inherit and 'mail.thread' in model._inherit %}
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>{% endif %}
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="{{ model.shortname | replace('.','_') }}_tree">
+        <field name="name">{{ model._name }}.tree{% if model.namespace != module.namespace %}.{{ module.name }}{% endif %}</field>
+        <field name="model">{{ model._name }}</field>
+        <field name="arch" type="xml">
+            <tree>
+            {%- for field in model.fields %}
+                {{ tree_field(field) }}
+            {%- endfor %}
+            </tree>
+        </field>
+    </record>
+</odoo>
