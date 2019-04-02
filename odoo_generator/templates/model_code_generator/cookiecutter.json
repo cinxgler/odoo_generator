@@ -1,5 +1,8 @@
 {
-    "name": "-change-me-",
-    "namespace": "-change-me-",
-    "_module": "-change-me-"
+    "name": "Module name",
+    "namespace": "module main namespace",
+    "_module": "metadata.Module object",
+    "_model": "metadata.Model object",
+    "model_filename": "current model to generate",
+    "_model_filenames": "All modules to include in the __init__"
 }

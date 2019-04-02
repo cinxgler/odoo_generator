@@ -65,13 +65,13 @@
         attachment=True,
     {%- endif -%}
 {%- endmacro -%}
+{%- set model = cookiecutter._model -%}
 # -*- coding: utf-8 -*-
 ##############################################################################
 # see LICENSE.TXT
 ##############################################################################
 from odoo import models, fields, api
 
-{% for model in cookiecutter._module.models.values() if model.namespace == cookiecutter.namespace %}
 class {{ model._name.title().replace("_", "").replace(".", "") }}(models.Model):
     {%- for attribute_name in ['_name', '_description', '_inherit', '_order', '_rec_name', '_table'] %}
     {%- set value = model | attr(attribute_name) -%}
@@ -99,4 +99,3 @@ class {{ model._name.title().replace("_", "").replace(".", "") }}(models.Model):
         pass
     {%- endfor %}
 
-{% endfor %}
