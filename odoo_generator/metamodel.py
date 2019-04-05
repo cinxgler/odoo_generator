@@ -38,6 +38,7 @@ class Model:
         name_parts = name.split('.')
         self.namespace = name_parts[0]
         self.shortname = '.'.join(name_parts[1:])
+        self.menu_label = None
 
 
 class Field:

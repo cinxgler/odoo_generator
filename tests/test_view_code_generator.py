@@ -209,6 +209,7 @@ class TestOdooViewGenerator(unittest.TestCase):
                 'compute': '',
                 'compute_sudo': '',
                 '_inherit': 'mail.thread|mail.activity.mixin|website.published.mixin',
+                'menu_label': 'My 2nd Model',
             },
             {
                 'model_name': '',
