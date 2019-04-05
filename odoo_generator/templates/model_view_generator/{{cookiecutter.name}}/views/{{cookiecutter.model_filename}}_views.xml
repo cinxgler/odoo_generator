@@ -3,9 +3,11 @@
             {#- TODO: Search for selection options -#}
             {#- TODO: Search for boolean options -#}
 {%- endmacro -%}
+
 {% macro search_group_by_field(field) -%}
     <filter string="{{ field.string }}" context="{'group_by':'{{ field.name }}'}" domain="" name="group_by_{{ field.name }}" />
 {%- endmacro -%}
+
 {% macro form_field(field, widget=False, within_tab=False) -%}
     {%- set field_invisible = '' -%}
     {%- if field.invisible -%}
@@ -28,7 +30,7 @@
     {%- endif -%}
 
     {%- set field_nolabel = '' -%}
-    {%- if within_tab and field.type in ['one2many', 'many2many'] -%}
+    {%- if within_tab and field.type in ['One2many', 'Many2many'] -%}
         {%- set field_nolabel = ' nolabel="1" colspan="4"' -%}
         <separator colspan="4"{{ field_invisible }} string="{{ field.string }}" />
     {%- endif -%}
@@ -83,19 +85,34 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                    {%- if model.fields | selectattr("name", "equalto", "active") | join('','name') %}
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                        </button>{% endif -%}
+                    {%- if model._inherit and 'website.published.mixin' in model._inherit %}
+                        <button class="oe_stat_button" name="website_publish_button" type="object" icon="fa-globe">
+                            <field name="website_published" widget="website_button"/>
+                        </button>
+                    {%- endif %}
                     </div>
                     <group>
-                    {%- for field in model.fields if field.name not in ['state', 'stage_id'] %}
+                    {%- for field in model.fields if field.name not in ['state', 'stage_id', 'active'] and field.type not in ['One2many', 'Many2many'] %}
                         {{  form_field(field) }}
                     {%- endfor %}
                     </group>
                     <notebook>
-                        {# TODO: Handle Notebook #}
+                    {%- for field in model.fields if field.name not in ['state', 'stage_id', 'active'] and field.type in ['One2many', 'Many2many'] %}
+                        <page string="{{ field.string }}" name="tab_{{ field.name }}">
+                            {{ form_field(field, within_tab=True) }}
+                        </page>
+                    {%- endfor %}
                     </notebook>
                 </sheet>
                 {%- if model._inherit and 'mail.thread' in model._inherit %}
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    {%- if model._inherit and 'mail.activity.mixin' in model._inherit %}
+                    <field name="activity_ids" widget="mail_activity"/>{% endif %}
                     <field name="message_ids" widget="mail_thread"/>
                 </div>{% endif %}
             </form>
@@ -106,7 +123,7 @@
         <field name="model">{{ model._name }}</field>
         <field name="arch" type="xml">
             <tree>
-            {%- for field in model.fields %}
+            {%- for field in model.fields if field.type not in ['One2many', 'Many2many', 'Binary'] %}
                 {{ tree_field(field) }}
             {%- endfor %}
             </tree>
