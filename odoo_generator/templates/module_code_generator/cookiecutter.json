@@ -1,5 +1,5 @@
 {
-    "name": "-change-me-",
-    "namespace": "-change-me-",
-    "_module": "-change-me-"
+    "name": "Module name",
+    "namespace": "module namespace",
+    "_module": "metadata.Module object"
 }

@@ -10,17 +10,17 @@
         sequence="10"
     />
     <menuitem id="{{ module.name }}_conf_menu" parent="{{ nav_menu_id }}"
-        name="Conf. {{ nav_menu_id }}"
-        groups="base.group_configuration"
+        name="Conf. {{ module.string }}"
+        groups="base.group_system"
         sequence="30"
      />
      <menuitem id="{{ module.name }}_admin_menu" parent="{{ nav_menu_id }}"
         name="Admin {{ module.string }}"
-        groups="base.group_configuration"
+        groups="base.group_no_one"
         sequence="100"
      />
 {%- set default_menu_id = module.name + '_conf_menu' -%}
-{%- for model in module.models.values() if cookiecutter.namespace == model.namespace %}
+{%- for model in module.models.values() %}
     <!--
     =================================================================
     Menu {{ model._name }}

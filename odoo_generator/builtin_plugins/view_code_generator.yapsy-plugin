@@ -1,0 +1,8 @@
+[Core]
+Name = View Code Generator
+Module = view_code_generator
+
+[Documentation]
+Author = Cinxgler Mariaca
+Version = 0.1
+Description = Generates the views folder and XML view files per model

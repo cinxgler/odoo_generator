@@ -12,12 +12,13 @@ class Module:
         self.description = None
         self.version = None
         self.depends = ['base']
-        self.attributes_to_ignore = ['models', 'groups', 'data_files', 'test_files', 'demo_files']
+        self.attributes_to_ignore = ['models', 'groups', 'init_packages', 'data_files', 'test_files', 'demo_files']
         self.models = OrderedDict()
         self.groups = OrderedDict()
-        self.data_files = []
-        self.test_files = []
-        self.demo_files = []
+        self.init_packages = [] # package names to include in the module's __init__ file
+        self.data_files = [] # Files to include in the manifest's data section
+        self.test_files = [] # Files to include in the manifest's test section
+        self.demo_files = [] # Files to include in the manifest's demo section
 
     def namespaces(self):
         namespaces = [ m.namespace for m in self.models.values() if m.namespace ]

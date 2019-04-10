@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo_generator.odoo_generator import CodeGenerator
 from cookiecutter.main import cookiecutter
-import os
+
 
 class ModuleCodeGenerator(CodeGenerator):
     def do_generate(self, module, templates_dir, output_dir):
