@@ -147,7 +147,7 @@ class TestOdoo_generator(unittest.TestCase):
             },
             {}
         ]
-        model = metamodel.Model('MyModel')
+        model = metamodel.Model('MyModel', metamodel.Module())
         builder = odoo_generator.MetamodelBuilder()
         for spec in definition:
             builder.add_model_attribute(model, spec)
@@ -233,7 +233,7 @@ class TestOdoo_generator(unittest.TestCase):
             },
             {}
         ]
-        model = metamodel.Model('MyModel')
+        model = metamodel.Model('MyModel', metamodel.Module())
         builder = odoo_generator.MetamodelBuilder()
         for spec in definition:
             builder.add_model_field(model, spec)
@@ -328,7 +328,7 @@ class TestOdoo_generator(unittest.TestCase):
             },
             {}
         ]
-        model = metamodel.Model('MyModel')
+        model = metamodel.Model('MyModel', metamodel.Module())
         builder = odoo_generator.MetamodelBuilder()
         for spec in definition:
             builder.add_model_field(model, spec)
@@ -408,19 +408,19 @@ class TestOdoo_generator(unittest.TestCase):
             },
             {}
         ]
-        model = metamodel.Model('MyModel')
+        model = metamodel.Model('MyModel', metamodel.Module())
         builder = odoo_generator.MetamodelBuilder()
         for spec in definition:
             builder.add_model_field(model, spec)
 
         self.assertEqual(3, len(model.fields))
         self.assertEqual(6, len(model.methods))
-        self.assertEqual(eval(definition[0]['compute']), model.methods[0]['name'])
-        self.assertEqual(eval(definition[0]['inverse']), model.methods[1]['name'])
-        self.assertEqual(eval(definition[0]['search']), model.methods[2]['name'])
-        self.assertEqual('_compute_name', model.methods[3]['name'])
-        self.assertEqual('_inverse_name', model.methods[4]['name'])
-        self.assertEqual('_search_name', model.methods[5]['name'])
+        self.assertEqual(eval(definition[0]['compute']), model.methods[0].name)
+        self.assertEqual(eval(definition[0]['inverse']), model.methods[1].name)
+        self.assertEqual(eval(definition[0]['search']), model.methods[2].name)
+        self.assertEqual('_compute_name', model.methods[3].name)
+        self.assertEqual('_inverse_name', model.methods[4].name)
+        self.assertEqual('_search_name', model.methods[5].name)
 
         self.assertEqual(definition[0]['store'], model.fields[0].store)
         self.assertEqual(definition[0]['compute_sudo'], model.fields[0].compute_sudo)
