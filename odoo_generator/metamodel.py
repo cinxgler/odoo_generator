@@ -26,20 +26,22 @@ class Module:
 
 
 class Model:
-    def __init__(self, name):
+    def __init__(self, name, module):
         self._name = name
         self._description = None
         self._order = None
         self._table = None
         self._rec_name = None
         self._inherit = []
-        self.attributes_to_ignore =  ['fields', 'methods', 'namespace', 'shortname']
+        self.attributes_to_ignore =  ['fields', 'methods', 'namespace', 'shortname', 'external_id', 'module']
         self.fields = []
         self.methods = []
+        self.module = module
         name_parts = name.split('.')
         self.namespace = name_parts[0]
         self.shortname = '.'.join(name_parts[1:])
         self.menu_label = None
+        self.external_id = '{0}.model_{1}'.format(self.module.name, self._name.replace('.', '_'))
 
 
 class Field:

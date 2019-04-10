@@ -142,7 +142,7 @@ class MetamodelBuilder:
                 self.add_module_attribute(module, line)
             else:
                 if not last_model_name in module.models:
-                    module.models[last_model_name] = metamodel.Model(last_model_name)
+                    module.models[last_model_name] = metamodel.Model(last_model_name, module)
                 model = module.models[last_model_name]
                 self.add_model_attribute(model, line)
                 field = self.add_model_field(model, line)
