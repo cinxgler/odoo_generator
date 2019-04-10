@@ -1,0 +1,8 @@
+[Core]
+Name = Security Code Generator
+Module = security_code_generator
+
+[Documentation]
+Author = Cinxgler Mariaca
+Version = 0.1
+Description = Generates the CSV file with basic ACL rules
