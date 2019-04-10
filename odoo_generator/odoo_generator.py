@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-
-from collections import OrderedDict
-from . import metamodel
-from . import exceptions
-
 from abc import ABC, abstractmethod
-from unittest.mock import patch
-import os
-
-
+from collections import OrderedDict
+import csv
 import logging
+import os
+from unittest.mock import patch
+
+from yapsy.IPlugin import IPlugin
+
+from odoo_generator import exceptions
+from odoo_generator import metamodel
+
 _logger = logging.getLogger(__name__)
 
 
@@ -150,8 +151,30 @@ class MetamodelBuilder:
         return module
 
 
-class CodeGenerator(ABC):
+class CodeGenerator(ABC, IPlugin):
+    """Base plugin class used to generate code and add extra metamodel details"""
+
+    def add_metadata_attributes(self, module, model, field, spec):
+        """Takes the spec and update the module, model or field as required
+
+        Args:
+            - module(metadada.Module): Current module object
+            - model(metadada.Model): Current model object
+            - field(metadada.Field): Current field object
+            - spec(Dict): Spec with the data to be used to update the module, model or fields metadata
+        """
+        pass
+
     def generate(self, module, templates_dir, output_dir='./'):
+        """Takes an module object and generates code using the given cookiecutter templates into the specific folder.
+        Calls do_generate method.
+
+        Args:
+            - module(metadada.Module): Current module object with all the model and fields metadata
+            - templates_dir(string): Root folder to search the cookiecutter templates of all plugins to use
+              in the code generation
+            - output_dir(string): Path where the code will be generated
+        """
         if templates_dir is None:
             templates_dir = os.path.dirname(__file__) + '/templates'
 
@@ -163,8 +186,17 @@ class CodeGenerator(ABC):
         return True
 
     def get_filename_for_model(self, model):
+        """Returns the name of the file where the model code will be stored.
+
+        Args:
+            - model(metadata.Model): Model object
+
+        Returns:
+            String: Name of the file to generate
+        """
         return model._name.lower().replace(".", "_")
 
     @abstractmethod
     def do_generate(module, templates_dir, output_dir):
+        """Generation logic"""
         pass
