@@ -1,33 +1,39 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""Console script for odoo_generator."""
-from yapsy.PluginManager import PluginManager
 import sys
+import os
+
 import click
+from yapsy.PluginManager import PluginManager
+
+from odoo_generator import odoo_generator
 
 
 @click.command()
-def main(args=None):
+@click.option('--templates_dir', default=None, help='Folder with custom templates to use for all plugins.')
+@click.option('--output_dir', default='./', help='Folder where the generated code will be stored')
+@click.argument('specs_filename')
+def main(templates_dir, output_dir, specs_filename):
     """Console script for odoo_generator."""
-    click.echo("Replace this message by putting your code into "
-               "odoo_generator.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
-
+    # Loads plugins
     manager = PluginManager()
-    manager.setPluginPlaces(["plugins"])
+    manager.setPluginPlaces([os.path.dirname(__file__) + "/builtin_plugins"])
     manager.collectPlugins()
 
-
-    builder = odoo_generator.MetamodelBuilder()
+    # Get a list of plugin's methods to add extra metadata in module definition
     add_attribute_functions = []
-    for pluginInfo in simplePluginManager.getPluginsOfCategory("MetadataBuilder"):
+    for pluginInfo in manager.getAllPlugins():
         manager.activatePluginByName(pluginInfo.name)
-        add_attribute_functions.append(pluginInfo.plugin_object.add_attributes)
+        add_attribute_functions.append(pluginInfo.plugin_object.add_metadata_attributes)
 
+    # Builds module metadata from CSV file
+    builder = odoo_generator.MetamodelBuilder()
+    line_generator = odoo_generator.csv_reader(specs_filename)
     module = builder.build(line_generator, add_attribute_functions)
 
-    for pluginInfo in simplePluginManager.getPluginsOfCategory("CodeGenerator"):
-        pluginInfo.plugin_object.generate_code(module)
+    # Generate module code
+    for pluginInfo in manager.getAllPlugins():
+        pluginInfo.plugin_object.generate(module, templates_dir, output_dir)
 
     return 0
 
