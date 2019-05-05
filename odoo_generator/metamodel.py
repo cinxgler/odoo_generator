@@ -101,16 +101,19 @@ class Field:
             if isinstance(value, str):
                 self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append(Method(name='_compute_{}'.format(self.name)))
+                self.compute = '_compute_{}'.format(self.name)
+                self.model.methods.append(Method(name=self.compute))
         if self.inverse:
             value = eval(self.inverse)
             if isinstance(value, str):
                 self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append(Method(name='_inverse_{}'.format(self.name)))
+                self.inverse = '_inverse_{}'.format(self.name)
+                self.model.methods.append(Method(name=self.inverse))
         if self.search:
             value = eval(self.search)
             if isinstance(value, str):
                 self.model.methods.append(Method(name=value))
             elif value:
-                self.model.methods.append(Method(name='_search_{}'.format(self.name)))
+                self.search = '_search_{}'.format(self.name)
+                self.model.methods.append(Method(name=self.search))
