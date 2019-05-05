@@ -9,5 +9,6 @@
 id,active,name,group_id/id,model_id/id,perm_create,perm_read,perm_write,perm_unlink
 {%- for model in module.models.values() if model.namespace == module.namespace %}
 {{ model.shortname | replace('.', '_') }}_global,True,"{{ model._name}} global",,{{ model.external_id }},0,1,0,0
+{{ model.shortname | replace('.', '_') }}_system_admin,True,"{{ model._name}} system_admin","base.group_system",{{ model.external_id }},1,1,1,1
 {%- endfor -%}
 
