@@ -473,7 +473,7 @@ class TestOdoo_generator(unittest.TestCase):
         result = odoo_generator.preprocess(line)
         expected = {
             'name': 'value',
-            'arguments': '',
+            'arguments': 'name=value|',
         }
         self.assertEqual(expected, result)
 
@@ -483,7 +483,16 @@ class TestOdoo_generator(unittest.TestCase):
         result = odoo_generator.preprocess(line)
         expected = {
             'name': 'value',
-            'arguments': 'arg_value2'
+            'arguments': 'name=value|arg_value|arg_value2'
+        }
+        self.assertEqual(expected, result)
+
+        line = {
+            'arguments': 'value|arg_value|arg_value2',
+        }
+        result = odoo_generator.preprocess(line)
+        expected = {
+            'arguments': 'value|arg_value|arg_value2'
         }
         self.assertEqual(expected, result)
 

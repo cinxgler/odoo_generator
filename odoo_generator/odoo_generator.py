@@ -19,16 +19,19 @@ def preprocess(line):
     """
     arguments = line['arguments']
     arguments = arguments.split(LIST_SEPARATOR)
-    new_arguments = {}
+    new_arguments = {'arguments': []}
     for part in arguments:
+        # Expand the line adding the key value from arguments for each part that is composed by key=value
         pieces = part.split('=', 1)
         if len(pieces) == 2:
             key = pieces[0].strip()
             value = pieces[1].strip()
             new_arguments[key] = value
+            new_arguments['arguments'].append(part)
         else:
             value = pieces[0].strip()
-            new_arguments['arguments'] = value
+            new_arguments['arguments'].append(value)
+    new_arguments['arguments'] = LIST_SEPARATOR.join(new_arguments['arguments'])
     line.update(new_arguments)
     new_line = { key: value.strip() for key, value in line.items()}
     return new_line
