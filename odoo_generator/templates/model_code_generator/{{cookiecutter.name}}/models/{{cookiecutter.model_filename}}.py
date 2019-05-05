@@ -19,6 +19,9 @@
     {%- if field.size %}
         size={{field.size}},
     {%- endif -%}
+    {%- if field.invisible %}
+        invisible={{field.invisible}},
+    {%- endif -%}
     {% if field.related %}
         related='{{field.related}}',
     {%- endif -%}
